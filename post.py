@@ -145,7 +145,8 @@ def build_caption(it):
     name = it["itemName"]
     if len(name) > 45:
         name = name[:44] + "…"
-    lines = [
+          lines = [
+        "⚠️商品リンクはプロフィールのURLから⚠️",
         "【PR】楽天市場のおすすめ商品",
         "",
         name,
