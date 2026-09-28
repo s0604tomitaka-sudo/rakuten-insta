@@ -199,6 +199,7 @@ def prepare(dry_run):
         "itemName": chosen["itemName"],
         "itemUrl": chosen.get("itemUrl"),
         "affiliateUrl": chosen.get("affiliateUrl"),
+              "price": chosen.get("itemPrice"),
         "image": name,
         "caption": caption,
     })
@@ -253,6 +254,8 @@ def publish():
         "itemName": p["itemName"],
         "itemUrl": p["itemUrl"],
         "affiliateUrl": p["affiliateUrl"],
+        "price": p.get("price"),
+        "image": p["image"],
         "mediaId": media_id,
         "date": f"{datetime.now():%Y-%m-%d %H:%M}",
     })
