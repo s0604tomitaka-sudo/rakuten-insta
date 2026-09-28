@@ -65,6 +65,11 @@ jobs:
       - name: Publish to Instagram
         if: github.event.inputs.dry_run != 'true'
         run: python post.py publish
+      - name: Build link page
+        if: github.event.inputs.dry_run != 'true'
+        run: python make_page.py
+
+
 
       - name: Commit history
         if: github.event.inputs.dry_run != 'true'
@@ -72,3 +77,11 @@ jobs:
           git add posted.json pending.json images
           git commit -m "posted" || true
           git push
+          
+      - name: Commit page
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          git add index.html
+          git commit -m "update link page" || true
+          git push
+
