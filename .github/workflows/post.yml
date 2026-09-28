@@ -1,0 +1,74 @@
+name: post-instagram
+
+on:
+  schedule:
+    - cron: "0 11 * * *"   # 毎日 20:00 JST(数分〜数十分ずれることがあります)
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "true = 投稿せず確認だけ / false = 実際に投稿"
+        default: "true"
+
+permissions:
+  contents: write
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    env:
+      RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
+      RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+      RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
+      IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+      IG_USER_ID: ${{ secrets.IG_USER_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install fonts and packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+          pip install -r requirements.txt
+
+      - name: Dry run (確認のみ)
+        if: github.event.inputs.dry_run == 'true'
+        run: python post.py prepare --dry-run
+
+      - name: Upload preview image
+        if: github.event.inputs.dry_run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview
+          path: images/
+
+      - name: Prepare post
+        if: github.event.inputs.dry_run != 'true'
+        run: python post.py prepare
+
+      - name: Commit image
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add images pending.json
+          git commit -m "prepare post" || true
+          git push
+
+      - name: Wait for image URL
+        if: github.event.inputs.dry_run != 'true'
+        run: sleep 15
+
+      - name: Publish to Instagram
+        if: github.event.inputs.dry_run != 'true'
+        run: python post.py publish
+
+      - name: Commit history
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          git add posted.json pending.json images
+          git commit -m "posted" || true
+          git push
