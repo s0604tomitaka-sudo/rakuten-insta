@@ -162,4 +162,118 @@ def build_caption(it):
         "商品リンクはプロフィールのリンクからどうぞ",
         "※価格は投稿時点のものです。最新の価格・在庫は楽天市場でご確認ください。",
         "",
-        
+                "#PR #楽天 #楽天市場 #楽天アフィリエイト #おすすめ #買ってよかった",
+    ]
+    return "\n".join(lines)
+
+
+# ---------- prepare ----------
+def prepare(dry_run):
+    done = {p["id"] for p in load_json(POSTED, [])}
+    chosen, photo_url = None, None
+    for it in fetch_ranking():
+        iid = it.get("itemCode") or it.get("itemUrl")
+        url = item_image_url(it)
+        if iid and iid not in done and url:
+            chosen, photo_url = it, url
+            break
+    if not chosen:
+        sys.exit("投稿できる新しい商品が見つかりませんでした")
+
+    IMG_DIR.mkdir(exist_ok=True)
+    name = f"{datetime.now():%Y%m%d-%H%M%S}.jpg"
+    make_image(chosen, photo_url).save(IMG_DIR / name, quality=90)
+    caption = build_caption(chosen)
+
+    print("---- キャプション ----")
+    print(caption)
+    print("---- 画像 ----")
+    print(f"images/{name}")
+
+    if dry_run:
+        print("(dry-run: 投稿しません)")
+        return
+
+    save_json(PENDING, {
+        "id": chosen.get("itemCode") or chosen.get("itemUrl"),
+        "itemName": chosen["itemName"],
+        "itemUrl": chosen.get("itemUrl"),
+        "affiliateUrl": chosen.get("affiliateUrl"),
+        "image": name,
+        "caption": caption,
+    })
+
+
+# ---------- publish ----------
+def check(r, label):
+    if r.status_code != 200:
+        sys.exit(f"{label} 失敗 {r.status_code}: {r.text[:500]}")
+    return r.json()
+
+
+def publish():
+    if not PENDING.exists():
+        sys.exit("pending.json がありません。先に prepare を実行してください")
+    p = load_json(PENDING, {})
+    repo = os.environ["GITHUB_REPOSITORY"]
+    branch = os.environ.get("GITHUB_REF_NAME", "main")
+    image_url = f"https://raw.githubusercontent.com/{repo}/{branch}/images/{p['image']}"
+
+    head = requests.get(image_url, timeout=30)
+    if head.status_code != 200:
+        sys.exit(f"画像URLにアクセスできません({head.status_code}): {image_url}")
+
+    token = os.environ["IG_ACCESS_TOKEN"]
+    uid = os.environ["IG_USER_ID"]
+
+    r = requests.post(f"{IG_BASE}/{uid}/media", data={
+        "image_url": image_url,
+        "caption": p["caption"],
+        "access_token": token,
+    }, timeout=60)
+    container = check(r, "コンテナ作成")["id"]
+
+    for _ in range(20):
+        s = requests.get(f"{IG_BASE}/{container}", params={
+            "fields": "status_code", "access_token": token}, timeout=30).json()
+        code = s.get("status_code")
+        if code == "FINISHED":
+            break
+        if code in ("ERROR", "EXPIRED"):
+            sys.exit(f"コンテナの処理に失敗: {code}")
+        time.sleep(3)
+
+    r = requests.post(f"{IG_BASE}/{uid}/media_publish", data={
+        "creation_id": container, "access_token": token}, timeout=60)
+    media_id = check(r, "公開")["id"]
+
+    posted = load_json(POSTED, [])
+    posted.append({
+        "id": p["id"],
+        "itemName": p["itemName"],
+        "itemUrl": p["itemUrl"],
+        "affiliateUrl": p["affiliateUrl"],
+        "mediaId": media_id,
+        "date": f"{datetime.now():%Y-%m-%d %H:%M}",
+    })
+    save_json(POSTED, posted)
+    PENDING.unlink()
+    print(f"投稿しました: mediaId={media_id}")
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    pp = sub.add_parser("prepare")
+    pp.add_argument("--dry-run", action="store_true")
+    sub.add_parser("publish")
+    args = ap.parse_args()
+    if args.cmd == "prepare":
+        prepare(args.dry_run)
+    else:
+        publish()
+
+
+if __name__ == "__main__":
+    main()
+
