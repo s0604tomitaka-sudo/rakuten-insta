@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>山田歯科・矯正歯科</title>
+<meta name="description" content="山田歯科・矯正歯科は、一般歯科から小児歯科、マウスピース矯正・ワイヤー矯正まで、ご家族みんなの歯の健康を守るクリニックです。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Noto+Sans+JP:wght@300;400;500&family=Shippori+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ivory: #f7f3ec;
+    --paper: #fbf9f5;
+    --sand: #e9e1d4;
+    --sage: #8fa598;
+    --sage-deep: #4f6b5f;
+    --ink: #2c3330;
+    --mute: #6f7772;
+    --gold: #b89a6a;
+    --line: rgba(44, 51, 48, .12);
+    --serif: "Shippori Mincho", "Hiragino Mincho ProN", serif;
+    --sans: "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --latin: "Cormorant Garamond", serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--sans); font-weight: 300; line-height: 2; letter-spacing: .06em;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  img, svg { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { width: min(1120px, 100% - 32px); margin: 0 auto; }
+
+  /* ---------- header ---------- */
+  .site-header {
+    position: fixed; inset: 0 0 auto; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px clamp(16px, 4vw, 48px);
+    transition: background .4s, box-shadow .4s, padding .4s;
+  }
+  .site-header.scrolled { background: rgba(251, 249, 245, .92); backdrop-filter: blur(10px); box-shadow: 0 1px 0 var(--line); padding-block: 12px; }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-mark { width: 38px; height: 38px; }
+  .logo-text { font-family: var(--serif); font-size: 18px; letter-spacing: .14em; line-height: 1.3; }
+  .logo-text small { display: block; font-family: var(--latin); font-size: 11px; letter-spacing: .2em; color: var(--mute); }
+  .nav { display: flex; align-items: center; gap: 28px; font-size: 13px; }
+  .nav a:not(.btn) { position: relative; }
+  .nav a:not(.btn)::after { content: ""; position: absolute; left: 0; bottom: 2px; width: 100%; height: 1px; background: var(--sage-deep); transform: scaleX(0); transform-origin: right; transition: transform .4s; }
+  .nav a:not(.btn):hover::after { transform: scaleX(1); transform-origin: left; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--sage-deep); color: #fff; padding: 12px 26px; border-radius: 999px;
+    font-size: 13px; letter-spacing: .12em; transition: background .3s, transform .3s;
+  }
+  .btn:hover { background: var(--ink); transform: translateY(-2px); }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+  .btn.ghost:hover { background: var(--ink); color: #fff; }
+  .menu-toggle { display: none; background: none; border: 0; width: 44px; height: 44px; cursor: pointer; position: relative; z-index: 60; }
+  .menu-toggle span { position: absolute; left: 10px; width: 24px; height: 1px; background: var(--ink); transition: transform .3s, top .3s; }
+  .menu-toggle span:nth-child(1) { top: 18px; }
+  .menu-toggle span:nth-child(2) { top: 26px; }
+  .menu-open .menu-toggle span:nth-child(1) { top: 22px; transform: rotate(30deg); }
+  .menu-open .menu-toggle span:nth-child(2) { top: 22px; transform: rotate(-30deg); }
+
+  /* ---------- hero ---------- */
+  .hero { position: relative; min-height: 100svh; display: grid; place-items: center; overflow: hidden; background: var(--ivory); }
+  .hero-bg { position: absolute; inset: 0; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .55; animation: float 18s ease-in-out infinite; }
+  .blob.b1 { width: 46vw; height: 46vw; background: #cfdcd3; top: -10vw; right: -8vw; }
+  .blob.b2 { width: 34vw; height: 34vw; background: #eadfcb; bottom: -8vw; left: -6vw; animation-delay: -6s; }
+  .blob.b3 { width: 22vw; height: 22vw; background: #dfe7e1; bottom: 12vh; right: 22vw; animation-delay: -12s; }
+  @keyframes float { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(2vw,-3vw) scale(1.06); } }
+  .hero-inner { position: relative; display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: 48px; padding-block: 140px 100px; }
+  .eyebrow { font-family: var(--latin); font-style: italic; font-size: 18px; color: var(--sage-deep); letter-spacing: .12em; margin: 0 0 18px; }
+  .hero h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(28px, 4.2vw, 52px); line-height: 1.6; letter-spacing: .1em; margin: 0 0 28px; }
+  .hero h1 em { font-style: normal; color: var(--sage-deep); }
+  .hero h1 .nw { white-space: nowrap; }
+  .hero p.lead { color: var(--mute); max-width: 32em; margin: 0 0 40px; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; }
+  .hero-visual { position: relative; aspect-ratio: 4/5; }
+  .arch {
+    position: absolute; inset: 0; border-radius: 999px 999px 24px 24px; overflow: hidden;
+    background: linear-gradient(160deg, #dfe8e2 0%, #c4d3c9 45%, #a9bdb1 100%);
+    box-shadow: 0 40px 80px -40px rgba(79,107,95,.5);
+  }
+  .arch svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero-badge {
+    position: absolute; left: -28px; bottom: 40px; width: 130px; height: 130px; border-radius: 50%;
+    background: var(--paper); display: grid; place-items: center; text-align: center;
+    box-shadow: 0 20px 40px -20px rgba(0,0,0,.25); font-family: var(--serif); font-size: 12px; line-height: 1.6;
+  }
+  .hero-badge b { display: block; font-family: var(--latin); font-size: 34px; font-weight: 500; color: var(--gold); line-height: 1; }
+  .scroll-cue { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); font-family: var(--latin); font-size: 12px; letter-spacing: .3em; color: var(--mute); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .scroll-cue::after { content: ""; width: 1px; height: 48px; background: linear-gradient(var(--mute), transparent); animation: cue 2.2s ease-in-out infinite; transform-origin: top; }
+  @keyframes cue { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+
+  /* ---------- sections ---------- */
+  section { padding-block: clamp(80px, 12vw, 140px); }
+  .sec-head { text-align: center; margin-bottom: clamp(48px, 7vw, 80px); }
+  .sec-head .en { font-family: var(--latin); font-size: clamp(40px, 6vw, 64px); font-weight: 400; color: var(--sage); letter-spacing: .08em; line-height: 1; margin: 0; }
+  .sec-head h2 { font-family: var(--serif); font-weight: 500; font-size: 16px; letter-spacing: .3em; margin: 14px 0 0; }
+
+  /* concept */
+  .concept { background: var(--paper); }
+  .concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 40px); }
+  .concept-item { padding: 40px 32px; border-top: 1px solid var(--ink); }
+  .concept-item .num { font-family: var(--latin); font-size: 44px; color: var(--gold); line-height: 1; }
+  .concept-item h3 { font-family: var(--serif); font-weight: 500; font-size: 20px; letter-spacing: .1em; margin: 18px 0 14px; line-height: 1.6; }
+  .concept-item p { color: var(--mute); font-size: 14px; margin: 0; }
+
+  /* treatment */
+  .treatment { background: var(--ivory); }
+  .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--line); border: 1px solid var(--line); }
+  .menu-card { background: var(--paper); padding: 44px 32px; position: relative; overflow: hidden; transition: background .5s; }
+  .menu-card::before { content: ""; position: absolute; inset: auto 0 0; height: 0; background: var(--sage-deep); transition: height .5s cubic-bezier(.6,0,.2,1); z-index: 0; }
+  .menu-card:hover::before { height: 100%; }
+  .menu-card > * { position: relative; z-index: 1; transition: color .5s; }
+  .menu-card:hover > * { color: #fff; }
+  .menu-card .icon { width: 48px; height: 48px; color: var(--sage-deep); margin-bottom: 22px; }
+  .menu-card:hover .icon { color: #fff; }
+  .menu-card .en { font-family: var(--latin); font-style: italic; font-size: 14px; color: var(--gold); letter-spacing: .12em; }
+  .menu-card h3 { font-family: var(--serif); font-weight: 500; font-size: 20px; margin: 4px 0 12px; letter-spacing: .1em; }
+  .menu-card p { font-size: 13.5px; color: var(--mute); margin: 0; }
+
+  /* ortho feature */
+  .ortho { background: var(--sage-deep); color: #f3f1ea; position: relative; overflow: hidden; }
+  .ortho .sec-head .en { color: rgba(255,255,255,.35); }
+  .ortho-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
+  .ortho h3 { font-family: var(--serif); font-weight: 500; font-size: clamp(24px, 3vw, 34px); line-height: 1.8; letter-spacing: .1em; margin: 0 0 24px; }
+  .ortho p { color: rgba(243,241,234,.8); font-size: 14.5px; }
+  .ortho-list { list-style: none; padding: 0; margin: 32px 0 0; display: grid; gap: 14px; }
+  .ortho-list li { display: flex; gap: 16px; align-items: baseline; border-bottom: 1px solid rgba(255,255,255,.18); padding-bottom: 14px; font-size: 14px; }
+  .ortho-list li span { font-family: var(--latin); color: var(--gold); font-size: 18px; min-width: 2em; }
+  .ortho-cards { display: grid; gap: 18px; }
+  .o-card { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); border-radius: 18px; padding: 28px; backdrop-filter: blur(4px); }
+  .o-card .tag { display: inline-block; font-size: 11px; letter-spacing: .2em; border: 1px solid var(--gold); color: var(--gold); padding: 2px 12px; border-radius: 999px; line-height: 1.8; }
+  .o-card h4 { font-family: var(--serif); font-weight: 500; font-size: 19px; margin: 12px 0 6px; letter-spacing: .08em; }
+  .o-card p { margin: 0; font-size: 13.5px; }
+  .ortho .ring { position: absolute; border: 1px solid rgba(255,255,255,.08); border-radius: 50%; pointer-events: none; }
+  .ortho .ring.r1 { width: 700px; height: 700px; right: -260px; top: -260px; }
+  .ortho .ring.r2 { width: 460px; height: 460px; right: -140px; top: -140px; }
+
+  /* flow */
+  .flow-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(5, 1fr); counter-reset: f; }
+  .flow-list li { position: relative; padding: 0 16px; text-align: center; }
+  .flow-list li::before {
+    counter-increment: f; content: counter(f, decimal-leading-zero);
+    display: grid; place-items: center; width: 72px; height: 72px; margin: 0 auto 20px; border-radius: 50%;
+    border: 1px solid var(--sage); font-family: var(--latin); font-size: 24px; color: var(--sage-deep); background: var(--paper); position: relative; z-index: 1;
+  }
+  .flow-list li:not(:last-child)::after { content: ""; position: absolute; top: 36px; left: calc(50% + 36px); right: calc(-50% + 36px); height: 1px; background: var(--sage); opacity: .5; }
+  .flow-list h4 { font-family: var(--serif); font-weight: 500; font-size: 16px; margin: 0 0 6px; letter-spacing: .1em; }
+  .flow-list p { font-size: 12.5px; color: var(--mute); margin: 0; line-height: 1.9; }
+
+  /* doctor */
+  .doctor { background: var(--ivory); }
+  .doctor-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(32px, 6vw, 88px); align-items: center; }
+  .portrait { aspect-ratio: 3/4; border-radius: 24px; background: linear-gradient(170deg, #e7ded0, #d3c6b1); position: relative; overflow: hidden; }
+  .portrait svg { position: absolute; inset: auto 0 0; width: 100%; }
+  .portrait .cap { position: absolute; left: 24px; top: 24px; font-family: var(--latin); font-style: italic; color: rgba(44,51,48,.55); letter-spacing: .14em; }
+  .doctor .role { font-size: 13px; color: var(--sage-deep); letter-spacing: .2em; margin: 0; }
+  .doctor .name { font-family: var(--serif); font-size: clamp(28px, 3.4vw, 38px); font-weight: 500; letter-spacing: .2em; margin: 8px 0 4px; }
+  .doctor .name-en { font-family: var(--latin); color: var(--mute); letter-spacing: .2em; margin: 0 0 32px; }
+  .doctor blockquote { margin: 0 0 32px; font-family: var(--serif); font-size: 16px; line-height: 2.2; border-left: 2px solid var(--gold); padding-left: 24px; }
+  .career { display: grid; grid-template-columns: auto 1fr; gap: 6px 24px; font-size: 13px; color: var(--mute); margin: 0; }
+  .career dt { font-family: var(--latin); font-size: 15px; color: var(--ink); }
+  .career dd { margin: 0; }
+
+  /* info */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 64px); }
+  .hours { width: 100%; border-collapse: collapse; font-size: 14px; text-align: center; }
+  .hours th, .hours td { padding: 16px 4px; border-bottom: 1px solid var(--line); font-weight: 400; }
+  .hours thead th { font-family: var(--serif); font-size: 13px; color: var(--mute); }
+  .hours tbody th { text-align: left; font-family: var(--latin); font-size: 16px; white-space: nowrap; }
+  .hours .on { color: var(--sage-deep); }
+  .hours .tri { color: var(--gold); }
+  .hours .off { color: #bbb; }
+  .notes { font-size: 12.5px; color: var(--mute); margin-top: 18px; line-height: 1.9; }
+  .map { aspect-ratio: 4/3; border-radius: 20px; overflow: hidden; background: var(--sand); position: relative; }
+  .map svg { width: 100%; height: 100%; }
+  .addr { margin-top: 24px; font-size: 14px; }
+  .addr dl { display: grid; grid-template-columns: 5em 1fr; gap: 6px 16px; margin: 0; }
+  .addr dt { color: var(--mute); }
+  .addr dd { margin: 0; }
+
+  /* contact */
+  .contact { background: linear-gradient(135deg, #e6ece7, var(--ivory)); text-align: center; }
+  .contact h2 { font-family: var(--serif); font-weight: 500; font-size: clamp(24px, 3.4vw, 36px); letter-spacing: .14em; margin: 0 0 16px; line-height: 1.7; }
+  .contact p { color: var(--mute); margin: 0 0 48px; }
+  .contact-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; }
+  .contact-box { background: var(--paper); border-radius: 20px; padding: 32px 44px; min-width: 300px; box-shadow: 0 20px 40px -30px rgba(44,51,48,.4); transition: transform .3s; }
+  .contact-box:hover { transform: translateY(-4px); }
+  .contact-box small { display: block; font-size: 12px; color: var(--mute); letter-spacing: .2em; }
+  .contact-box strong { display: block; font-family: var(--latin); font-size: 34px; font-weight: 500; letter-spacing: .08em; margin: 6px 0; color: var(--sage-deep); }
+  .contact-box span { font-size: 12px; color: var(--mute); }
+
+  footer { background: var(--ink); color: rgba(255,255,255,.7); padding: 64px 0 32px; font-size: 13px; }
+  .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 32px; align-items: flex-start; }
+  footer .logo-text { color: #fff; }
+  footer .logo-text small { color: rgba(255,255,255,.5); }
+  footer nav { display: flex; flex-wrap: wrap; gap: 12px 28px; }
+  footer nav a:hover { color: #fff; }
+  .copy { margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.12); font-family: var(--latin); letter-spacing: .14em; font-size: 12px; text-align: center; }
+
+  /* floating cta (mobile) */
+  .float-cta { display: none; }
+
+  /* reveal */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 1.1s cubic-bezier(.2,.6,.2,1), transform 1.1s cubic-bezier(.2,.6,.2,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal.d1 { transition-delay: .12s; } .reveal.d2 { transition-delay: .24s; } .reveal.d3 { transition-delay: .36s; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } .blob, .scroll-cue::after { animation: none; } }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 960px) {
+    .menu-toggle { display: block; }
+    .nav {
+      position: fixed; inset: 0; flex-direction: column; justify-content: center; gap: 28px; font-size: 16px;
+      background: var(--ivory); opacity: 0; pointer-events: none; transition: opacity .4s;
+    }
+    .menu-open .nav { opacity: 1; pointer-events: auto; }
+    .hero-inner { grid-template-columns: 1fr; padding-block: 120px 100px; }
+    .hero-visual { max-width: 340px; width: 80%; margin: 0 auto; order: -1; }
+    .hero-badge { left: -16px; bottom: 20px; width: 104px; height: 104px; font-size: 11px; }
+    .hero-badge b { font-size: 26px; }
+    .concept-grid, .menu-grid { grid-template-columns: 1fr 1fr; }
+    .ortho-grid, .doctor-grid, .info-grid { grid-template-columns: 1fr; }
+    .portrait { max-width: 380px; }
+    .flow-list { grid-template-columns: 1fr; gap: 28px; max-width: 420px; margin: 0 auto; }
+    .flow-list li { display: grid; grid-template-columns: 64px 1fr; gap: 0 20px; text-align: left; padding: 0; }
+    .flow-list li::before { grid-row: span 2; width: 64px; height: 64px; margin: 0; font-size: 20px; }
+    .flow-list li:not(:last-child)::after { left: 32px; right: auto; top: 64px; width: 1px; height: 28px; }
+  }
+  @media (max-width: 600px) {
+    body { letter-spacing: .04em; }
+    br.pc { display: none; }
+    .concept-grid, .menu-grid { grid-template-columns: 1fr; }
+    .concept-item { padding: 32px 4px; }
+    .menu-card { padding: 36px 24px; }
+    .contact-box { min-width: 0; width: 100%; padding: 28px 20px; }
+    .hours th, .hours td { padding: 12px 2px; font-size: 13px; }
+    .hours tbody th { font-size: 14px; }
+    .float-cta {
+      display: grid; grid-template-columns: 1fr 1fr; position: fixed; inset: auto 0 0; z-index: 40;
+      transform: translateY(100%); transition: transform .4s;
+    }
+    .float-cta.show { transform: none; }
+    .float-cta a { padding: 16px 8px; text-align: center; color: #fff; font-size: 13px; letter-spacing: .12em; }
+    .float-cta a:first-child { background: var(--ink); }
+    .float-cta a:last-child { background: var(--sage-deep); }
+    footer { padding-bottom: 90px; }
+    .scroll-cue { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header" id="header">
+  <a href="#top" class="logo" aria-label="山田歯科・矯正歯科 トップへ">
+    <svg class="logo-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+      <circle cx="20" cy="20" r="19" stroke="#4f6b5f" stroke-width="1"/>
+      <path d="M13 13c2-2 4.5-1.6 7 0 2.5-1.6 5-2 7 0 2.2 2.3 1.5 6-.3 9-.9 1.6-1.2 4.2-1.8 6.4-.4 1.5-2 1.5-2.4 0L21 23.5c-.3-1-1.7-1-2 0l-1.5 4.9c-.4 1.5-2 1.5-2.4 0-.6-2.2-.9-4.8-1.8-6.4-1.8-3-2.5-6.7-.3-9z" stroke="#4f6b5f" stroke-width="1.2" stroke-linejoin="round"/>
+    </svg>
+    <span class="logo-text">山田歯科・矯正歯科<small>YAMADA DENTAL &amp; ORTHODONTICS</small></span>
+  </a>
+  <nav class="nav" id="nav">
+    <a href="#concept">当院について</a>
+    <a href="#treatment">診療案内</a>
+    <a href="#ortho">矯正歯科</a>
+    <a href="#doctor">院長紹介</a>
+    <a href="#info">診療時間・アクセス</a>
+    <a href="#contact" class="btn">ご予約</a>
+  </nav>
+  <button class="menu-toggle" id="menuToggle" aria-label="メニューを開く" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" style="padding:0">
+    <div class="hero-bg" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
+    <div class="wrap hero-inner">
+      <div>
+        <p class="eyebrow reveal">Smile for every day.</p>
+        <h1 class="reveal d1">笑顔に、<br><span class="nw"><em>自信</em>と<em>やすらぎ</em>を。</span></h1>
+        <p class="lead reveal d2">山田歯科・矯正歯科は、むし歯や歯周病の治療から予防、<br class="pc">そして美しい歯並びをつくる矯正治療まで。<br>ご家族みんなの「一生ものの歯」に寄り添うクリニックです。</p>
+        <div class="hero-actions reveal d3">
+          <a href="#contact" class="btn">Web予約・お問い合わせ →</a>
+          <a href="#ortho" class="btn ghost">矯正相談について</a>
+        </div>
+      </div>
+      <div class="hero-visual reveal d2" aria-hidden="true">
+        <div class="arch">
+          <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <linearGradient id="lg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+            </defs>
+            <!-- window light -->
+            <rect x="60" y="60" width="120" height="200" rx="60" fill="url(#lg1)"/>
+            <rect x="220" y="60" width="120" height="200" rx="60" fill="url(#lg1)"/>
+            <!-- plant -->
+            <path d="M88 420c0-60 10-110 30-150" stroke="#5c7a6c" stroke-width="2" fill="none"/>
+            <ellipse cx="104" cy="300" rx="26" ry="10" transform="rotate(-50 104 300)" fill="#6f8e7e"/>
+            <ellipse cx="128" cy="330" rx="24" ry="9" transform="rotate(-20 128 330)" fill="#7d9b8b"/>
+            <ellipse cx="82" cy="350" rx="24" ry="9" transform="rotate(30 82 350)" fill="#6f8e7e"/>
+            <ellipse cx="118" cy="270" rx="22" ry="8" transform="rotate(-70 118 270)" fill="#88a596"/>
+            <path d="M66 420h48l-6 50H72z" fill="#e9e1d4"/>
+            <!-- chair silhouette -->
+            <path d="M200 470c0-40 20-60 60-70l70-14c18-3 28 8 26 24l-4 60z" fill="#f4efe6" opacity=".9"/>
+            <path d="M310 386c-6-60 8-110 30-130 12-10 24-4 22 12l-14 120z" fill="#f4efe6" opacity=".9"/>
+            <!-- lamp -->
+            <path d="M260 0v120" stroke="#f4efe6" stroke-width="2"/>
+            <ellipse cx="260" cy="128" rx="34" ry="12" fill="#f4efe6"/>
+            <ellipse cx="260" cy="136" rx="80" ry="30" fill="#fff" opacity=".18"/>
+            <!-- floor -->
+            <rect x="0" y="470" width="400" height="30" fill="#9cb2a5"/>
+          </svg>
+        </div>
+        <div class="hero-badge"><div>開院<b>20</b>周年</div></div>
+      </div>
+    </div>
+    <div class="scroll-cue">SCROLL</div>
+  </section>
+
+  <!-- CONCEPT -->
+  <section class="concept" id="concept">
+    <div class="wrap">
+      <div class="sec-head reveal"><p class="en">Concept</p><h2>当院の想い</h2></div>
+      <div class="concept-grid">
+        <article class="concept-item reveal">
+          <div class="num">01</div>
+          <h3>痛みに配慮した、<br>やさしい治療</h3>
+          <p>表面麻酔や極細の針、電動麻酔器を使用し、できる限り痛みを抑えた治療を心がけています。歯科が苦手な方もご安心ください。</p>
+        </article>
+        <article class="concept-item reveal d1">
+          <div class="num">02</div>
+          <h3>納得いただける、<br>ていねいな説明</h3>
+          <p>口腔内カメラやCT画像を使い、お口の状態をわかりやすくご説明。複数の治療プランからご希望に合った方法を一緒に選びます。</p>
+        </article>
+        <article class="concept-item reveal d2">
+          <div class="num">03</div>
+          <h3>一生涯つづく、<br>予防という選択</h3>
+          <p>治療して終わりではなく、歯科衛生士による定期メンテナンスで再発を防ぎ、いつまでもご自身の歯で過ごせる毎日を支えます。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- TREATMENT -->
+  <section class="treatment" id="treatment">
+    <div class="wrap">
+      <div class="sec-head reveal"><p class="en">Treatment</p><h2>診療案内</h2></div>
+      <div class="menu-grid reveal">
+        <article class="menu-card">
+          <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M14 10c3-3 6.5-2.4 10 0 3.5-2.4 7-3 10 0 3.2 3.3 2.2 8.8-.4 13-1.3 2.3-1.8 6-2.6 9.3-.6 2.2-2.8 2.2-3.4 0L25.5 26c-.4-1.4-2.6-1.4-3 0l-2.1 6.3c-.6 2.2-2.8 2.2-3.4 0-.8-3.3-1.3-7-2.6-9.3-2.6-4.2-3.6-9.7-.4-13z"/></svg>
+          <span class="en">General</span><h3>一般歯科</h3>
+          <p>むし歯・歯周病の治療から、詰め物・被せ物まで。できるだけ削らず、歯を残す治療を大切にしています。</p>
+        </article>
+        <article class="menu-card">
+          <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="24" cy="18" r="9"/><path d="M20 17h.01M28 17h.01M20.5 21.5c2 1.6 5 1.6 7 0"/><path d="M10 42c1.5-8 7-12 14-12s12.5 4 14 12"/></svg>
+          <span class="en">Pediatric</span><h3>小児歯科</h3>
+          <p>歯医者さんを好きになってもらうことから。フッ素塗布やシーラントで、お子さまの歯を守ります。</p>
+        </article>
+        <article class="menu-card">
+          <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 24c4-8 10-12 16-12s12 4 16 12c-4 8-10 12-16 12S12 32 8 24z"/><path d="M14 24h20M18 20v8M24 19v10M30 20v8"/></svg>
+          <span class="en">Orthodontics</span><h3>矯正歯科</h3>
+          <p>目立たないマウスピース矯正から、確実なワイヤー矯正まで。お子さまから大人の方まで対応します。</p>
+        </article>
+        <article class="menu-card">
+          <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M24 6v6M24 36v6M6 24h6M36 24h6M11.3 11.3l4.2 4.2M32.5 32.5l4.2 4.2M11.3 36.7l4.2-4.2M32.5 15.5l4.2-4.2"/><circle cx="24" cy="24" r="7"/></svg>
+          <span class="en">Whitening</span><h3>ホワイトニング</h3>
+          <p>ご自宅で行うホーム、短期間で白くするオフィス、両方を組み合わせたデュアルホワイトニングをご用意。</p>
+        </article>
+        <article class="menu-card">
+          <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M24 6l14 6v10c0 9-6 16-14 20-8-4-14-11-14-20V12z"/><path d="M18 24l4 4 8-8"/></svg>
+          <span class="en">Prevention</span><h3>予防歯科</h3>
+          <p>専任の歯科衛生士によるクリーニングとセルフケア指導で、むし歯・歯周病を未然に防ぎます。</p>
+        </article>
+        <article class="menu-card">
+          <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M17 8c2.5-2 5-1.5 7 0 2-1.5 4.5-2 7 0 2.5 2.5 1.6 6.8-.3 10H17.3C15.4 14.8 14.5 10.5 17 8z"/><path d="M20 18v4h8v-4M21 22l-1 6h8l-1-6M20 28l-2 6h12l-2-6M18 34l-1 6h14l-1-6"/></svg>
+          <span class="en">Implant</span><h3>インプラント</h3>
+          <p>歯科用CTによる精密診断で、安全性に配慮したインプラント治療。失った歯の機能と見た目を取り戻します。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORTHO -->
+  <section class="ortho" id="ortho">
+    <span class="ring r1" aria-hidden="true"></span><span class="ring r2" aria-hidden="true"></span>
+    <div class="wrap">
+      <div class="sec-head reveal"><p class="en">Orthodontics</p><h2>矯正歯科</h2></div>
+      <div class="ortho-grid">
+        <div class="reveal">
+          <h3>美しい歯並びは、<br>健やかな毎日のはじまり。</h3>
+          <p>歯並びを整えることは、見た目の印象だけでなく、噛み合わせの改善やむし歯・歯周病の予防にもつながります。日本矯正歯科学会の認定医が、精密検査にもとづいて一人ひとりに最適な治療計画をご提案します。</p>
+          <ul class="ortho-list">
+            <li><span>01</span>矯正専門の認定医が在籍</li>
+            <li><span>02</span>3Dシミュレーションで仕上がりを事前に確認</li>
+            <li><span>03</span>明瞭なトータルフィー制度で追加費用の心配なし</li>
+            <li><span>04</span>初回の矯正相談は無料（約30分）</li>
+          </ul>
+        </div>
+        <div class="ortho-cards">
+          <article class="o-card reveal d1"><span class="tag">ADULT</span><h4>マウスピース矯正</h4><p>透明で目立たず、取り外しも可能。お仕事やイベントが多い方にも人気の矯正方法です。</p></article>
+          <article class="o-card reveal d2"><span class="tag">ADULT / TEEN</span><h4>ワイヤー矯正（表側・裏側）</h4><p>幅広い症例に対応できるスタンダードな方法。白いワイヤーや裏側矯正もお選びいただけます。</p></article>
+          <article class="o-card reveal d3"><span class="tag">KIDS</span><h4>小児矯正</h4><p>成長期のあごの発育を利用して、将来の歯並びの土台を整えます。6〜10歳頃のご相談がおすすめです。</p></article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FLOW -->
+  <section class="flow">
+    <div class="wrap">
+      <div class="sec-head reveal"><p class="en">Flow</p><h2>矯正治療の流れ</h2></div>
+      <ol class="flow-list reveal">
+        <li><h4>無料相談</h4><p>お悩みやご希望をお聞きし、治療方法や期間の目安をご説明します。</p></li>
+        <li><h4>精密検査</h4><p>レントゲン・CT・口腔内スキャンで、歯とあごの状態を詳しく調べます。</p></li>
+        <li><h4>治療計画</h4><p>3Dシミュレーションをもとに、最適なプランと費用をご提案します。</p></li>
+        <li><h4>矯正治療</h4><p>月1回程度の通院で、歯を少しずつ理想の位置へ動かします。</p></li>
+        <li><h4>保定・メンテ</h4><p>リテーナーで歯並びを安定させ、定期的にチェックします。</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- DOCTOR -->
+  <section class="doctor" id="doctor">
+    <div class="wrap">
+      <div class="sec-head reveal"><p class="en">Doctor</p><h2>院長紹介</h2></div>
+      <div class="doctor-grid">
+        <div class="portrait reveal" aria-hidden="true">
+          <span class="cap">Director</span>
+          <svg viewBox="0 0 300 300">
+            <circle cx="150" cy="110" r="52" fill="#c7b79d"/>
+            <path d="M40 300c6-70 52-110 110-110s104 40 110 110z" fill="#fbf9f5"/>
+            <path d="M128 190l22 40 22-40" fill="none" stroke="#d3c6b1" stroke-width="3"/>
+            <path d="M150 230v70" stroke="#e9e1d4" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="reveal d1">
+          <p class="role">院長 / 歯学博士</p>
+          <p class="name">山田 太郎</p>
+          <p class="name-en">TARO YAMADA</p>
+          <blockquote>「この歯医者さんなら、また来てもいい」<br>そう思っていただける場所であり続けたい。<br>地域の皆さまのかかりつけ医として、<br>小さな不安にも真摯に向き合います。</blockquote>
+          <dl class="career">
+            <dt>2001</dt><dd>○○大学 歯学部 卒業</dd>
+            <dt>2005</dt><dd>○○大学大学院 歯学研究科 修了（歯学博士）</dd>
+            <dt>2006</dt><dd>山田歯科・矯正歯科 開院</dd>
+            <dt>—</dt><dd>日本矯正歯科学会 認定医 / 日本歯周病学会 会員</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INFO -->
+  <section class="info" id="info">
+    <div class="wrap">
+      <div class="sec-head reveal"><p class="en">Information</p><h2>診療時間・アクセス</h2></div>
+      <div class="info-grid">
+        <div class="reveal">
+          <table class="hours">
+            <thead><tr><th scope="col">診療時間</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th><th>日</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">9:30–13:00</th><td class="on">●</td><td class="on">●</td><td class="on">●</td><td class="off">—</td><td class="on">●</td><td class="on">●</td><td class="off">—</td></tr>
+              <tr><th scope="row">14:30–19:00</th><td class="on">●</td><td class="on">●</td><td class="on">●</td><td class="off">—</td><td class="on">●</td><td class="tri">▲</td><td class="off">—</td></tr>
+            </tbody>
+          </table>
+          <p class="notes">▲ 土曜午後は14:00〜17:00<br>休診日：木曜・日曜・祝日<br>※矯正相談は予約制です。お電話またはWebよりご予約ください。</p>
+        </div>
+        <div class="reveal d1">
+          <div class="map" aria-label="周辺地図（イメージ）" role="img">
+            <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+              <rect width="400" height="300" fill="#ece5d9"/>
+              <path d="M0 190h400M0 80h400" stroke="#fbf9f5" stroke-width="18"/>
+              <path d="M120 0v300M290 0v300" stroke="#fbf9f5" stroke-width="12"/>
+              <path d="M0 260c80-30 140 10 220-20s120-10 180 10" stroke="#cfdcd3" stroke-width="14" fill="none"/>
+              <rect x="20" y="104" width="80" height="66" rx="6" fill="#e2d9ca"/>
+              <rect x="140" y="104" width="130" height="66" rx="6" fill="#e2d9ca"/>
+              <rect x="310" y="104" width="76" height="66" rx="6" fill="#dfe7e1"/>
+              <rect x="140" y="12" width="130" height="50" rx="6" fill="#e2d9ca"/>
+              <rect x="40" y="62" width="60" height="8" rx="4" fill="#8fa598"/>
+              <text x="70" y="56" font-size="11" fill="#6f7772" text-anchor="middle" font-family="sans-serif">○○駅</text>
+              <g transform="translate(205 128)">
+                <circle r="26" fill="#4f6b5f" opacity=".15"><animate attributeName="r" values="14;30;14" dur="2.6s" repeatCount="indefinite"/></circle>
+                <path d="M0 6c-10-12-14-18-14-24a14 14 0 0 1 28 0c0 6-4 12-14 24z" fill="#4f6b5f" transform="translate(0 -4)"/>
+                <circle cy="-22" r="5" fill="#fbf9f5"/>
+              </g>
+              <text x="205" y="160" font-size="11" fill="#2c3330" text-anchor="middle" font-family="sans-serif">山田歯科・矯正歯科</text>
+            </svg>
+          </div>
+          <div class="addr">
+            <dl>
+              <dt>住所</dt><dd>〒000-0000 ○○県○○市○○町1-2-3 ○○ビル2F</dd>
+              <dt>アクセス</dt><dd>○○線「○○駅」東口より徒歩3分</dd>
+              <dt>駐車場</dt><dd>提携駐車場あり（2時間無料）</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="wrap reveal">
+      <p class="eyebrow">Reservation</p>
+      <h2>まずはお気軽に、<br>ご相談ください。</h2>
+      <p>ご予約・お問い合わせはお電話、またはWeb予約から承っております。</p>
+      <div class="contact-row">
+        <a class="contact-box" href="tel:000-000-0000"><small>TEL</small><strong>000-000-0000</strong><span>受付時間 9:30〜19:00（木・日・祝 休診）</span></a>
+        <a class="contact-box" href="#contact"><small>WEB</small><strong>24h予約</strong><span>24時間いつでもご予約いただけます</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div class="logo"><span class="logo-text">山田歯科・矯正歯科<small>YAMADA DENTAL &amp; ORTHODONTICS</small></span></div>
+      <nav>
+        <a href="#concept">当院について</a>
+        <a href="#treatment">診療案内</a>
+        <a href="#ortho">矯正歯科</a>
+        <a href="#doctor">院長紹介</a>
+        <a href="#info">診療時間・アクセス</a>
+      </nav>
+    </div>
+    <p class="copy">© Yamada Dental &amp; Orthodontics</p>
+  </div>
+</footer>
+
+<div class="float-cta" id="floatCta">
+  <a href="tel:000-000-0000">電話で予約</a>
+  <a href="#contact">Web予約</a>
+</div>
+
+<script>
+  (function () {
+    var header = document.getElementById('header');
+    var cta = document.getElementById('floatCta');
+    var toggle = document.getElementById('menuToggle');
+    var onScroll = function () {
+      var y = window.scrollY;
+      header.classList.toggle('scrolled', y > 40);
+      cta.classList.toggle('show', y > window.innerHeight * 0.6);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    var setMenu = function (open) {
+      document.body.classList.toggle('menu-open', open);
+      toggle.setAttribute('aria-expanded', open);
+      toggle.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
+    };
+    toggle.addEventListener('click', function () { setMenu(!document.body.classList.contains('menu-open')); });
+    document.querySelectorAll('#nav a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
+
+    var items = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+      items.forEach(function (el) { io.observe(el); });
+    } else {
+      items.forEach(function (el) { el.classList.add('in'); });
+    }
+  })();
+</script>
+</body>
+</html>
