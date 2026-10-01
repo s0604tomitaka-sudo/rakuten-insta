@@ -2,6 +2,7 @@ name: post-instagram
 
 on:
   schedule:
+    - cron: "0 3 * * *"    # 毎日 12:00 JST(数分〜数十分ずれることがあります)
     - cron: "0 11 * * *"   # 毎日 20:00 JST(数分〜数十分ずれることがあります)
   workflow_dispatch:
     inputs:
@@ -11,6 +12,11 @@ on:
 
 permissions:
   contents: write
+
+# 実行が重なって同じ商品を投稿したり push が衝突したりしないよう、1つずつ実行する
+concurrency:
+  group: post-instagram
+  cancel-in-progress: false
 
 jobs:
   post:
