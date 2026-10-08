@@ -1,0 +1,78 @@
+name: dental-story
+
+on:
+  schedule:
+    - cron: "7 0 * * *"    # 毎日 9:07 JST(数分〜数十分ずれることがあります)
+    - cron: "7 9 * * *"    # 毎日 18:07 JST(数分〜数十分ずれることがあります)
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "true = 投稿せず確認だけ / false = 実際に投稿"
+        default: "true"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dental-story
+  cancel-in-progress: false
+
+jobs:
+  story:
+    runs-on: ubuntu-latest
+    env:
+      DENTAL_IG_ACCESS_TOKEN: ${{ secrets.DENTAL_IG_ACCESS_TOKEN }}
+      DENTAL_IG_USER_ID: ${{ secrets.DENTAL_IG_USER_ID }}
+      CLINIC_NAME: "山田歯科・矯正歯科"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install fonts and packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+          pip install -r requirements.txt
+
+      - name: Dry run (確認のみ)
+        if: github.event.inputs.dry_run == 'true'
+        run: python dental_story.py prepare --dry-run
+
+      - name: Upload preview image
+        if: github.event.inputs.dry_run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: story-preview
+          path: stories/
+          if-no-files-found: ignore
+
+      - name: Prepare story
+        if: github.event.inputs.dry_run != 'true'
+        run: python dental_story.py prepare
+
+      # 楽天の投稿ワークフローと同時に push しても衝突しないよう、pull --rebase してから push する
+      - name: Commit image
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          mkdir -p stories
+          git add -A stories story_pending.json
+          git commit -m "prepare dental story" || true
+          git pull --rebase origin main
+          git push
+
+      - name: Publish story
+        if: github.event.inputs.dry_run != 'true'
+        run: python dental_story.py publish
+
+      - name: Commit history
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          git add -A story_posted.json story_pending.json
+          git commit -m "posted dental story" || true
+          git pull --rebase origin main
+          git push
