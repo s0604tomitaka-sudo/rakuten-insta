@@ -11,12 +11,13 @@
   CLINIC_NAME  画像に入れる医院名(既定: 山田歯科・矯正歯科)
 
 選び方:
-  アカウントの最新投稿から、まだストーリーにしていないものを新しい順に選びます。
-  すべてストーリー済みなら、いちばん前にストーリーにしたものをもう一度使います。
+  アカウントの過去の全投稿(フィード・リール)からランダムに選びます。
+  ただし最近ストーリーにした投稿(全体の半分まで、最大 RECENT_SKIP 件)は避けます。
 """
 import argparse
 import json
 import os
+import random
 import sys
 import time
 from datetime import datetime
@@ -35,7 +36,7 @@ IMG_DIR = ROOT / "stories"
 
 IG_BASE = "https://graph.instagram.com"
 CLINIC_NAME = os.environ.get("CLINIC_NAME") or "山田歯科・矯正歯科"
-MEDIA_LIMIT = 50  # 候補にする最新投稿の数
+RECENT_SKIP = 20  # 直近この件数のストーリーで使った投稿は選ばない
 KEEP_IMAGES = 6   # stories/ に残す画像の数
 
 
@@ -49,12 +50,20 @@ def uid():
 
 # ---------- 素材選び ----------
 def fetch_media():
-    r = requests.get(f"{IG_BASE}/{uid()}/media", params={
+    """過去の投稿をすべて取得する(ページをたどる)。"""
+    media = []
+    url = f"{IG_BASE}/{uid()}/media"
+    params = {
         "fields": "id,media_type,media_url,thumbnail_url,permalink,timestamp",
-        "limit": MEDIA_LIMIT,
+        "limit": 100,
         "access_token": token(),
-    }, timeout=30)
-    return check(r, "投稿一覧の取得").get("data", [])
+    }
+    while url:
+        body = check(requests.get(url, params=params, timeout=30), "投稿一覧の取得")
+        media += body.get("data", [])
+        url = body.get("paging", {}).get("next")
+        params = None  # next の URL にはパラメータが含まれている
+    return media
 
 
 def first_child(media_id):
@@ -82,10 +91,14 @@ def resolve(m):
 
 
 def choose(media, history):
-    last = {h["mediaId"]: h["date"] for h in history}
-    fresh = [m for m in media if m["id"] not in last]          # 新しい順
-    reused = sorted((m for m in media if m["id"] in last), key=lambda m: last[m["id"]])
-    for m in fresh + reused:
+    """ランダムに選ぶ。最近ストーリーにした投稿は後回しにする。"""
+    skip_n = min(RECENT_SKIP, len(media) // 2)
+    recent = {h["mediaId"] for h in history[-skip_n:]} if skip_n else set()
+    others = [m for m in media if m["id"] not in recent]
+    again = [m for m in media if m["id"] in recent]
+    random.shuffle(others)
+    random.shuffle(again)
+    for m in others + again:
         r = resolve(m)
         if r:
             return m, r
