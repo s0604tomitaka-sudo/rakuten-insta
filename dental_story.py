@@ -41,6 +41,7 @@ CLINIC_NAME = os.environ.get("CLINIC_NAME") or "山田歯科・矯正歯科"
 RECENT_SKIP = 20  # 直近この件数のストーリーで使った投稿は選ばない
 KEEP_IMAGES = 6   # stories/ に残す画像・動画の数(それぞれ)
 MAX_VIDEO_SEC = 59  # ストーリーの動画は60秒まで
+MAX_TRIES = 5       # 素材の加工に失敗したとき、別の投稿を選び直す回数
 
 
 def token():
@@ -93,8 +94,8 @@ def resolve(m):
     return None
 
 
-def choose(media, history):
-    """ランダムに選ぶ。最近ストーリーにした投稿は後回しにする。"""
+def candidates(media, history):
+    """ランダムな順に (投稿, 素材) を返す。最近ストーリーにした投稿は後回しにする。"""
     skip_n = min(RECENT_SKIP, len(media) // 2)
     recent = {h["mediaId"] for h in history[-skip_n:]} if skip_n else set()
     others = [m for m in media if m["id"] not in recent]
@@ -104,8 +105,7 @@ def choose(media, history):
     for m in others + again:
         r = resolve(m)
         if r:
-            return m, r
-    return None, None
+            yield m, r
 
 
 # ---------- 画像 ----------
@@ -163,13 +163,15 @@ def make_story_video(video_url, out_path):
             "[bg][fg]overlay=(W-w)/2:(H-h)/2[v];"
             "[v][1:v]overlay=0:0,format=yuv420p[out]"
         )
-        subprocess.run([
+        r = subprocess.run([
             "ffmpeg", "-y", "-loglevel", "error", "-i", str(src), "-i", str(labels),
             "-filter_complex", filters, "-map", "[out]", "-map", "0:a?",
             "-t", str(MAX_VIDEO_SEC), "-r", "30", "-c:v", "libx264", "-preset", "veryfast",
             "-crf", "26", "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart",
             str(out_path),
-        ], check=True)
+        ])
+        if r.returncode != 0:
+            raise RuntimeError("ffmpeg で動画を加工できませんでした")
 
 
 def clean_old_images():
@@ -180,29 +182,48 @@ def clean_old_images():
 
 
 # ---------- prepare ----------
-def prepare(dry_run):
-    history = load_json(HISTORY, [])
-    m, r = choose(fetch_media(), history)
-    if not m:
-        sys.exit("ストーリーにできる投稿が見つかりませんでした")
-    kind, url, fallback = r
-
-    print("---- 選んだ投稿 ----")
-    print(f"{m.get('timestamp', '')} {kind} {m.get('permalink', '')}")
-
-    pending = {"mediaId": m["id"], "permalink": m.get("permalink"), "kind": kind}
+def make_story_files(kind, url, fallback):
+    """素材をストーリー用に加工して stories/ に保存し、ファイル名を返す。失敗したら例外。"""
     IMG_DIR.mkdir(exist_ok=True)
     stem = f"{datetime.now():%Y%m%d-%H%M%S}"
     if kind == "IMAGE":
         make_story_image(url).save(IMG_DIR / f"{stem}.jpg", quality=90)
-        pending["image"] = f"{stem}.jpg"
-    else:
+        return {"image": f"{stem}.jpg"}
+
+    files = {}
+    try:
         make_story_video(url, IMG_DIR / f"{stem}.mp4")
-        pending["video"] = f"{stem}.mp4"
-        # 動画が通らなかったときのために、サムネイルもストーリー用の画像にしておく
+        files["video"] = f"{stem}.mp4"
+        # 動画が通らなかったときのために、サムネイルもストーリー用の画像にしておく(なくてもよい)
         if fallback:
-            make_story_image(fallback).save(IMG_DIR / f"{stem}.jpg", quality=90)
-            pending["image"] = f"{stem}.jpg"
+            try:
+                make_story_image(fallback).save(IMG_DIR / f"{stem}.jpg", quality=90)
+                files["image"] = f"{stem}.jpg"
+            except Exception as e:
+                print(f"サムネイルの加工に失敗(動画だけで投稿します): {e}")
+    except Exception:
+        (IMG_DIR / f"{stem}.mp4").unlink(missing_ok=True)
+        raise
+    return files
+
+
+def prepare(dry_run):
+    history = load_json(HISTORY, [])
+    for tries, (m, r) in enumerate(candidates(fetch_media(), history), 1):
+        kind, url, fallback = r
+        print("---- 選んだ投稿 ----")
+        print(f"{m.get('timestamp', '')} {kind} {m.get('permalink', '')}")
+        try:
+            files = make_story_files(kind, url, fallback)
+            break
+        except Exception as e:
+            print(f"素材の加工に失敗したので、別の投稿を選び直します: {e}")
+            if tries >= MAX_TRIES:
+                sys.exit(f"{MAX_TRIES} 回続けて素材の加工に失敗しました")
+    else:
+        sys.exit("ストーリーにできる投稿が見つかりませんでした")
+
+    pending = {"mediaId": m["id"], "permalink": m.get("permalink"), "kind": kind, **files}
     clean_old_images()
     for key in ("video", "image"):
         if key in pending:
